@@ -1,0 +1,1 @@
+const a={parameters:{backgrounds:{default:"White (G10)",values:[{name:"White (G10)",value:"#ffffff"},{name:"Gray 10",value:"#f4f4f4"},{name:"Gray 90",value:"#262626"},{name:"Gray 100",value:"#161616"}]},layout:"padded",docs:{toc:!0}}};export{a as default};

@@ -1,0 +1,141 @@
+# Carbon Design System Agent Rules
+
+## What this project is
+This is a Storybook component library built on IBM Carbon Design System (@carbon/react).
+The running Storybook is at http://localhost:6006.
+All UI must use Carbon components and tokens only — never arbitrary colours, custom components, or external UI libraries.
+
+## Available components (import from @carbon/react)
+Button, TextInput, PasswordInput, Form, FormGroup, Stack,
+DataTable, Table, TableHead, TableRow, TableHeader, TableBody, TableCell, TableContainer,
+TableToolbar, TableToolbarContent, TableToolbarSearch, DataTableSkeleton,
+Modal, InlineNotification, ToastNotification, ActionableNotification,
+Tag, Checkbox, Tile, Accordion, AccordionItem,
+Dropdown, MultiSelect, ComboBox,
+Select, SelectItem, DatePicker, DatePickerInput,
+Toggle, RadioButton, RadioButtonGroup,
+Breadcrumb, BreadcrumbItem, Link,
+Grid, Column,
+Loading, InlineLoading, SkeletonText, SkeletonPlaceholder,
+Tabs, TabList, Tab, TabPanels, TabPanel,
+Header, HeaderContainer, HeaderName, HeaderNavigation, HeaderMenuItem,
+HeaderGlobalBar, HeaderGlobalAction, HeaderMenuButton, HeaderSideNavItems, SkipToContent,
+SideNav, SideNavItems, SideNavLink, SideNavMenu, SideNavMenuItem
+
+## Available icons (import from @carbon/icons-react)
+Add, TrashCan, Download, Edit, Search, Settings, User, ChevronDown,
+ChevronRight, Close, Warning, CheckmarkFilled, ErrorFilled, InformationFilled
+
+## Carbon token reference (NEVER use arbitrary hex values)
+### Colours
+- Background:       #f4f4f4
+- Layer-01:         #ffffff
+- Layer-02:         #e8e8e8
+- Text-primary:     #161616
+- Text-secondary:   #525252
+- Text-placeholder: #a8a8a8
+- Interactive:      #0f62fe  ← primary blue, use for links and focus
+- Interactive hover:#0353e9
+- Support-error:    #da1e28
+- Support-success:  #198038
+- Support-warning:  #f1c21b
+- Support-info:     #0043ce
+- Border-subtle:    #e0e0e0
+- Border-strong:    #8d8d8d
+
+### Spacing (always use multiples of 4px, prefer 8px base)
+- sp-01: 2px  | sp-02: 4px  | sp-03: 8px  | sp-04: 16px
+- sp-05: 24px | sp-06: 32px | sp-07: 40px | sp-08: 48px
+
+### Typography (IBM Plex Sans only)
+- body-01:    14px / 400
+- body-02:    16px / 400
+- heading-01: 14px / 600
+- heading-02: 16px / 600
+- productive-heading-03: 20px / 400
+- label-01:   12px / 400
+- helper-text: 12px / 400, color: text-secondary
+
+## Rules the agent must follow
+1. No border-radius on components (Carbon is flat and square). Exceptions: Tags = 2px, Toggle = 14px.
+2. Never use arbitrary hex colours. Use only the tokens listed above.
+3. Always use IBM Plex Sans. Never introduce another font.
+4. Labels always sit ABOVE inputs, never beside them.
+5. Use Tag components for status values (Active=green, Error=red, Pending=blue, Archived=gray).
+6. Use Stack component for vertical spacing inside forms.
+7. Buttons: primary for the single main action only. Never two primary buttons side by side.
+8. Modal for critical actions only. Use InlineNotification for feedback within the page.
+9. When generating a new story file, follow this structure exactly:
+
+```jsx
+export default {
+  title: 'Carbon / ComponentName',
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component: 'One sentence explaining what this component is for and when to use it.',
+      },
+    },
+  },
+};
+
+export const StoryName = {
+  name: 'Human readable name',
+  parameters: {
+    docs: {
+      description: {
+        story: 'One sentence explaining what this specific story demonstrates.',
+      },
+    },
+  },
+  render: () => ( /* component here */ ),
+};
+```
+
+## Grid rules (CRITICAL for layout generation)
+- Always use Grid + Column from @carbon/react — never CSS flexbox/grid directly for page layouts
+- 16 columns total at lg breakpoint
+- Common spans: 16 (full), 8+8 (halves), 4+4+4+4 (quarters), 4+12 (sidebar+content)
+- Always set sm, md, lg props together for responsive layouts: <Column sm={4} md={4} lg={8}>
+- Gutter modes: default=wide (32px), narrow (16px), condensed (1px)
+- Column spans at each breakpoint must add up to 16 (lg), 8 (md), 4 (sm)
+
+## Tabs rules
+- Always use composable API: Tabs > TabList > Tab and Tabs > TabPanels > TabPanel
+- Line tabs (default): <TabList aria-label="..."> with no extra props
+- Contained tabs: <TabList contained aria-label="...">
+- Never use the old type="container" prop (deprecated in v11)
+
+## Dropdown rules
+- Short fixed list (< 10 items): use Dropdown
+- Long list or user benefits from filtering: use ComboBox
+- Multiple selections valid: use MultiSelect
+- Always provide titleText (label above) and itemToString prop
+
+## Loading rules  
+- Full page processing: use Loading with withOverlay={false} (or true for overlay)
+- Inline action feedback: use InlineLoading — show active → finished → error states
+- Content placeholder while data loads: use SkeletonText, SkeletonPlaceholder, or DataTableSkeleton
+- Never use a plain spinner div — always use Carbon's Loading components
+
+## UI Shell rules
+- Always wrap Header + SideNav inside HeaderContainer (manages toggle state)
+- SideNav isPersistent={true} for always-visible; isPersistent={false} for toggleable
+- Always include SkipToContent inside Header for accessibility
+- HeaderSideNavItems mirrors Header nav links inside SideNav for mobile
+1. Create a new file in src/stories/ComponentName.stories.jsx
+2. Import from @carbon/react only
+3. Export a default with title under the 'Carbon /' prefix
+4. Write at least: a Playground story (with args), an All States story, and one real usage story
+5. Run npm run storybook — it hot-reloads automatically
+
+## Storybook structure
+src/stories/
+  Button.stories.jsx       — 5 variants, 5 sizes, icon, icon-only, disabled
+  TextInput.stories.jsx    — default, all 4 states, sizes, password
+  Notification.stories.jsx — inline, toast, actionable (all 4 kinds)
+  DataTable.stories.jsx    — basic table, toolbar + live search, status tags
+  Modal.stories.jsx        — default, danger, form modal, passive
+  Tag.stories.jsx          — all 12 colour types, status pattern, sizes
+  Form.stories.jsx         — complete login form, settings form
